@@ -1,16 +1,16 @@
 package com.example.live_wallpaper
 
-import android.app.WallpaperManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.service.wallpaper.WallpaperService
-import android.view.SurfaceHolder
 import android.util.Log
+import android.view.SurfaceHolder
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem.ClippingConfiguration
 import java.io.File
-import java.io.IOException
 
 class VideoWallpaperService : WallpaperService() {
 
@@ -19,12 +19,12 @@ class VideoWallpaperService : WallpaperService() {
     }
 
     inner class VideoEngine : Engine() {
-        private var mediaPlayer: MediaPlayer? = null
+        private var exoPlayer: ExoPlayer? = null
         private var videoPath: String? = null
+        private var isVisible = false
 
         override fun onCreate(surfaceHolder: SurfaceHolder) {
             super.onCreate(surfaceHolder)
-             // Allow touch events if needed in future
              setTouchEventsEnabled(false)
         }
 
@@ -40,18 +40,19 @@ class VideoWallpaperService : WallpaperService() {
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
+            this.isVisible = visible
             if (visible) {
                  // Re-check path in case it changed while not visible
                  val prefs = getSharedPreferences("wallpaper_prefs", Context.MODE_PRIVATE)
                  val newPath = prefs.getString("video_path", null)
                  if (newPath != videoPath && newPath != null) {
-                     loadVideoPath()
+                     videoPath = newPath
                      initializePlayer(surfaceHolder)
                  } else {
-                     mediaPlayer?.start()
+                     exoPlayer?.play()
                  }
             } else {
-                mediaPlayer?.pause()
+                exoPlayer?.pause()
             }
         }
 
@@ -67,24 +68,38 @@ class VideoWallpaperService : WallpaperService() {
             releasePlayer()
             
             try {
-                mediaPlayer = MediaPlayer().apply {
-                    setSurface(holder.surface)
-                    setDataSource(videoPath)
-                    setLooping(true)
-                    setVolume(0f, 0f) // Mute by default
-                    prepare()
-                    start()
+                exoPlayer = ExoPlayer.Builder(applicationContext).build().apply {
+                    setVideoSurfaceHolder(holder)
+                    repeatMode = Player.REPEAT_MODE_ONE
+                    volume = 0f // Mute
                 }
-            } catch (e: IOException) {
-                Log.e("VideoWallpaperService", "Error initializing player", e)
+
+                // Create a MediaItem with ClippingConfiguration for 10s limit
+                val trimmingConfig = ClippingConfiguration.Builder()
+                    .setStartPositionMs(0)
+                    .setEndPositionMs(10_000) // 10 seconds
+                    .build()
+
+                val mediaItem = MediaItem.Builder()
+                    .setUri(File(videoPath!!).toURI().toString())
+                    .setClippingConfiguration(trimmingConfig)
+                    .build()
+
+                exoPlayer?.setMediaItem(mediaItem)
+                exoPlayer?.prepare()
+                
+                if (isVisible) {
+                    exoPlayer?.play()
+                }
+
             } catch (e: Exception) {
-                 Log.e("VideoWallpaperService", "General error initializing player", e)
+                 Log.e("VideoWallpaperService", "Error initializing ExoPlayer", e)
             }
         }
 
         private fun releasePlayer() {
-            mediaPlayer?.release()
-            mediaPlayer = null
+            exoPlayer?.release()
+            exoPlayer = null
         }
     }
 }

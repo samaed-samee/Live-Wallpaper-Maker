@@ -19,11 +19,19 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _recentVideos = [];
   Map<String, Uint8List?> _thumbnails = {};
   bool _isLoading = true;
+  bool _showFabLabel = true;
 
   @override
   void initState() {
     super.initState();
     _loadRecentVideos();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _showFabLabel = false;
+        });
+      }
+    });
   }
 
   Future<void> _loadRecentVideos() async {
@@ -228,10 +236,46 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(onPressed: _pickVideo, icon: const Icon(Icons.add)),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _pickVideo,
-        icon: const Icon(Icons.video_library),
-        label: const Text("Select Video"),
+      floatingActionButton: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        width: _showFabLabel ? 160.0 : 56.0,
+        height: 56.0,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: kElevationToShadow[6],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _pickVideo,
+            borderRadius: BorderRadius.circular(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.video_library),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                  child: Row(
+                    children: [
+                      if (_showFabLabel) ...[
+                        const SizedBox(width: 12),
+                        const Text(
+                          "Select Video",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.clip,
+                          softWrap: false,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

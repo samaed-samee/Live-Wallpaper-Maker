@@ -133,6 +133,86 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _showHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("How to use"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildStep(
+                icon: Icons.search,
+                color: Colors.redAccent,
+                title: "1. Find Video",
+                description:
+                    "Search for 'Vertical Mobile Live Wallpaper' on Pinterest or Google.",
+              ),
+              const SizedBox(height: 16),
+              _buildStep(
+                icon: Icons.download_rounded,
+                color: Colors.blueAccent,
+                title: "2. Download",
+                description: "Save the MP4 video to your device gallery.",
+              ),
+              const SizedBox(height: 16),
+              _buildStep(
+                icon: Icons.wallpaper,
+                color: Colors.green,
+                title: "3. Set Wallpaper",
+                description: "Tap '+' in this app, pick the video, and Apply.",
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Got it"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStep({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String description,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircleAvatar(
+          backgroundColor: color.withOpacity(0.2),
+          child: Icon(icon, color: color),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,6 +220,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Live Wallpaper Maker'),
         centerTitle: true,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: () => _showHelpDialog(context),
+            tooltip: 'How to use',
+          ),
           IconButton(onPressed: _pickVideo, icon: const Icon(Icons.add)),
         ],
       ),

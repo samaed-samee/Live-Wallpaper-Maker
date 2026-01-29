@@ -1,4 +1,4 @@
-package com.example.live_wallpaper
+package com.mplive.wallpaper
 
 import android.app.WallpaperManager
 import android.content.ComponentName
@@ -12,7 +12,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "com.example.live_wallpaper/channels"
+    private val CHANNEL = "com.mplive.wallpaper/channels"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

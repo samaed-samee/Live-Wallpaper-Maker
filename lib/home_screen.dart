@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<String> _recentVideos = [];
-  Map<String, Uint8List?> _thumbnails = {};
+  final Map<String, Uint8List?> _thumbnails = {};
   bool _isLoading = true;
   bool _showFabLabel = true;
 

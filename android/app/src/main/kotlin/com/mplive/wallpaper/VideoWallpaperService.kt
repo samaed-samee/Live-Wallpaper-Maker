@@ -1,4 +1,4 @@
-package com.example.live_wallpaper
+package com.mplive.wallpaper
 
 import android.content.Context
 import android.media.MediaPlayer

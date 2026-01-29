@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 
 class NativeBridge {
   static const MethodChannel _channel = MethodChannel(
-    'com.example.live_wallpaper/channels',
+    'com.mplive.wallpaper/channels',
   );
 
   /// Requests the native side to set the wallpaper using the video at [path].

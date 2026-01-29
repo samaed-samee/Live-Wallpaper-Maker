@@ -117,6 +117,41 @@ class _HomeScreenState extends State<HomeScreen> {
     if (result != null) {
       final path = result.files.single.path;
       if (path != null) {
+        print("DEBUG: New path: $path");
+        print("DEBUG: Existing paths: $_recentVideos");
+
+        // Check if we already have this video (comparing paths)
+        // NOTE: On some Android versions, picking the same file might return
+        // a different temporary path if cached.
+        bool isDuplicate = _recentVideos.contains(path);
+
+        if (!isDuplicate) {
+          // Try a more relaxed check (e.g., filename only) if the exact path check fails?
+          // Or maybe the paths are just different.
+          // inspecting names for now.
+          for (var p in _recentVideos) {
+            if (p.split('/').last == path.split('/').last) {
+              print("DEBUG: Filename match found: $p");
+              // Assuming same filename means same video for now, to test hypothesis
+              // We might need to check file size or hash to be sure, but let's see.
+              isDuplicate = true;
+              break;
+            }
+          }
+        }
+
+        if (isDuplicate) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("This video is already selected!"),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+          return;
+        }
+
         await _savePathToHistory(path);
         _navigateToPreview(path);
       }
@@ -299,7 +334,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             )
           : GridView.builder(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.only(
+                top: 8,
+                left: 8,
+                right: 8,
+                bottom: 100 + MediaQuery.of(context).padding.bottom,
+              ),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 8,

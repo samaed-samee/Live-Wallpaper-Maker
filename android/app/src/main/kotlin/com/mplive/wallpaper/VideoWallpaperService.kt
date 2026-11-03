@@ -74,10 +74,10 @@ class VideoWallpaperService : WallpaperService() {
                     volume = 0f // Mute
                 }
 
-                // Create a MediaItem with ClippingConfiguration for 10s limit
+                // Create a MediaItem with ClippingConfiguration for 15s limit
                 val trimmingConfig = ClippingConfiguration.Builder()
                     .setStartPositionMs(0)
-                    .setEndPositionMs(10_000) // 10 seconds
+                    .setEndPositionMs(15_000) // 15 seconds
                     .build()
 
                 val mediaItem = MediaItem.Builder()

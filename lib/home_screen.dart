@@ -111,29 +111,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.video,
-      allowMultiple: false,
+      allowMultiple: true,
     );
 
-    if (result != null) {
-      final path = result.files.single.path;
-      if (path != null) {
+    if (result != null && result.files.isNotEmpty) {
+      int duplicateCount = 0;
+      int addedCount = 0;
+      String? firstNewPath;
+
+      for (final file in result.files) {
+        final path = file.path;
+        if (path == null) continue;
+
         print("DEBUG: New path: $path");
         print("DEBUG: Existing paths: $_recentVideos");
 
         // Check if we already have this video (comparing paths)
-        // NOTE: On some Android versions, picking the same file might return
-        // a different temporary path if cached.
         bool isDuplicate = _recentVideos.contains(path);
 
         if (!isDuplicate) {
-          // Try a more relaxed check (e.g., filename only) if the exact path check fails?
-          // Or maybe the paths are just different.
-          // inspecting names for now.
+          // Try a more relaxed check (filename only)
           for (var p in _recentVideos) {
             if (p.split('/').last == path.split('/').last) {
               print("DEBUG: Filename match found: $p");
-              // Assuming same filename means same video for now, to test hypothesis
-              // We might need to check file size or hash to be sure, but let's see.
               isDuplicate = true;
               break;
             }
@@ -141,19 +141,42 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         if (isDuplicate) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("This video is already selected!"),
-                duration: Duration(seconds: 2),
-              ),
-            );
-          }
-          return;
+          duplicateCount++;
+          continue;
         }
 
         await _savePathToHistory(path);
-        _navigateToPreview(path);
+        addedCount++;
+        firstNewPath ??= path;
+      }
+
+      if (duplicateCount > 0 && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              duplicateCount == 1
+                  ? "1 video was already selected!"
+                  : "$duplicateCount videos were already selected!",
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+
+      if (addedCount > 0 && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              addedCount == 1 ? "1 video added!" : "$addedCount videos added!",
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+
+      // Navigate to preview of the first newly added video
+      if (firstNewPath != null) {
+        _navigateToPreview(firstNewPath);
       }
     }
   }

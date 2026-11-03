@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class NativeBridge {
@@ -13,7 +14,7 @@ class NativeBridge {
       });
       return result == true;
     } on PlatformException catch (e) {
-      print("Failed to set wallpaper: '${e.message}'.");
+      debugPrint("Failed to set wallpaper: '${e.message}'.");
       return false;
     }
   }
@@ -24,7 +25,7 @@ class NativeBridge {
       final result = await _channel.invokeMethod('checkCapability');
       return result == true;
     } on PlatformException catch (e) {
-      print("Failed to check capability: '${e.message}'.");
+      debugPrint("Failed to check capability: '${e.message}'.");
       return false;
     }
   }

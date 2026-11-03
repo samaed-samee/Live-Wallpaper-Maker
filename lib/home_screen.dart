@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (e) {
-      print("Error generating thumbnail for $path: $e");
+      debugPrint("Error generating thumbnail for $path: $e");
     }
   }
 
@@ -123,8 +123,8 @@ class _HomeScreenState extends State<HomeScreen> {
         final path = file.path;
         if (path == null) continue;
 
-        print("DEBUG: New path: $path");
-        print("DEBUG: Existing paths: $_recentVideos");
+        debugPrint("DEBUG: New path: $path");
+        debugPrint("DEBUG: Existing paths: $_recentVideos");
 
         // Check if we already have this video (comparing paths)
         bool isDuplicate = _recentVideos.contains(path);
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // Try a more relaxed check (filename only)
           for (var p in _recentVideos) {
             if (p.split('/').last == path.split('/').last) {
-              print("DEBUG: Filename match found: $p");
+              debugPrint("DEBUG: Filename match found: $p");
               isDuplicate = true;
               break;
             }
@@ -252,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CircleAvatar(
-          backgroundColor: color.withOpacity(0.2),
+          backgroundColor: color.withValues(alpha: 0.2),
           child: Icon(icon, color: color),
         ),
         const SizedBox(width: 16),

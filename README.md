@@ -24,6 +24,15 @@ This project uses a hybrid architecture:
     -   Renders video directly to the Wallpaper Surface.
     -   Manages Lifecycle events to save battery.
 
+## Download
+
+| File | Size | Platform |
+|------|------|----------|
+| 📦 [live wallpaper maker.apk](apks/live%20wallpaper%20maker.apk) | 44.9 MB | Android |
+
+> [!NOTE]
+> Download and install directly on your Android device. You may need to enable **"Install unknown apps"** in your device settings (Settings → Security / Privacy).
+
 ## Getting Started
 
 ### Prerequisites

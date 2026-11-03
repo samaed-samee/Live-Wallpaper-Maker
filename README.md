@@ -36,7 +36,7 @@ This project uses a hybrid architecture:
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/live_wallpaper.git
+    git clone https://github.com/samaed-samee/Live-Wallpaper-Maker.git
     ```
 2.  Install dependencies:
     ```bash

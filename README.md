@@ -26,9 +26,11 @@ This project uses a hybrid architecture:
 
 ## Download
 
-| File | Size | Platform |
-|------|------|----------|
-| 📦 [live wallpaper maker.apk](apks/live%20wallpaper%20maker.apk) | 44.9 MB | Android |
+[![Download APK](https://img.shields.io/badge/Download-APK%20(44.9%20MB)-2ea44f?style=for-the-badge&logo=android&logoColor=white)](https://github.com/samaed-samee/Live-Wallpaper-Maker/raw/main/apks/live%20wallpaper%20maker.apk)
+
+| File | Size | Platform | Action |
+|------|------|----------|--------|
+| 📱 **live wallpaper maker.apk** | 44.9 MB | Android 8.0+ | [⬇️ **Direct Download**](https://github.com/samaed-samee/Live-Wallpaper-Maker/raw/main/apks/live%20wallpaper%20maker.apk) |
 
 > [!NOTE]
 > Download and install directly on your Android device. You may need to enable **"Install unknown apps"** in your device settings (Settings → Security / Privacy).
